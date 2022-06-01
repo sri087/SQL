@@ -81,6 +81,71 @@ INSERT INTO license_exp_month VALUES
     ('M','December');
 
 
+-- STATE CODES and NAMES
+
+DROP TABLE IF EXISTS usa_states;
+
+CREATE TABLE usa_states (
+    state_code char(2), 
+    state_name text,
+
+    CONSTRAINT state_key PRIMARY KEY(state_code)
+);
+
+INSERT INTO licensee_types VALUES
+    ('AL','Alabama'),
+    ('AK','Alaska'),
+    ('AZ','Arizona'),
+    ('AR','Arkansas'),
+    ('CA','California'),
+    ('CO','Colorado'),
+    ('CT','Connecticut'),
+    ('DE','Delaware'),
+    ('DC','District of Columbia'),
+    ('FL','Florida'),
+    ('GA','Georgia'),
+    ('HI','Hawaii'),
+    ('ID','Idaho'),
+    ('IL','Illinois'),
+    ('IN','Indiana'),
+    ('IA','Iowa'),
+    ('KS','Kansas'),
+    ('KY','Kentucky'),
+    ('LA','Louisiana'),
+    ('ME','Maine'),
+    ('MD','Maryland'),
+    ('MA','Massachusetts'),
+    ('MI','Michigan'),
+    ('MN','Minnesota'),
+    ('MS','Mississippi'),
+    ('MO','Missouri'),
+    ('MT','Montana'),
+    ('NE','Nebraska'),
+    ('NV','Nevada'),
+    ('NH','New Hampshire'),
+    ('NJ','New Jersey'),
+    ('NM','New Mexico'),
+    ('NY','New York'),
+    ('NC','North Carolina'),
+    ('ND','North Dakota'),
+    ('OH','Ohio'),
+    ('OK','Oklahoma'),
+    ('OR','Oregon'),
+    ('PA','Pennsylvania'),
+    ('RI','Rhode Island'),
+    ('SC','South Carolina'),
+    ('SD','South Dakota'),
+    ('TN','Tennessee'),
+    ('TX','Texas'),
+    ('UT','Utah'),
+    ('VT','Vermont'),
+    ('WA','Washington'),
+    ('WV','West Virginia'),
+    ('WI','Wisconsin'),
+    ('WY','Wyoming')
+    ;
+
+SELECT * from usa_states;
 SELECT * from regions;
 SELECT * from licensee_types;
 SELECT * from license_exp_month;
