@@ -92,7 +92,7 @@ CREATE TABLE usa_states (
     CONSTRAINT state_key PRIMARY KEY(state_code)
 );
 
-INSERT INTO licensee_types VALUES
+INSERT INTO usa_states VALUES
     ('AL','Alabama'),
     ('AK','Alaska'),
     ('AZ','Arizona'),
