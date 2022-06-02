@@ -29,11 +29,11 @@ CREATE TABLE raw_data_temp (
 COPY raw_data_temp(region, irs_dist,county_fips_code,license_type_code,license_exp_date,
                    license_seq,licensee_name,business_name,bus_street,bus_city,bus_state,bus_zipcode,
                    mail_street,mail_city,mail_state,mail_zipcode,phone)
-FROM '/home/sri/Documents/SQL/data_cleaning_projects/ATF/raw_data/0118-ffl-list.csv'
+FROM '/home/sri/Documents/SQL/data_cleaning_projects/ATF/raw_data/0522-ffl-list.csv'
 WITH (FORMAT CSV, HEADER);
 
-
 -- BACKUP LOADED DATA
+DROP TABLE IF EXISTS raw_data_temp_backup;
 CREATE TABLE raw_data_temp_backup AS SELECT * FROM raw_data_temp;
 
 
@@ -42,21 +42,25 @@ CREATE TABLE raw_data_temp_backup AS SELECT * FROM raw_data_temp;
 -- We intend to clean only the business address
 -- The mail address will be discarded while loading into the permanent table
 
+-- Remove rows where the region OR IRS code OR County code is NULL
+DELETE FROM raw_data_temp 
+WHERE region IS NULL or irs_dist IS NULL or county_fips_code IS NULL;
+
 -- Remove rows where the license_exp_date is not of the format [number][letter]
 DELETE FROM raw_data_temp 
-WHERE (left(license_exp_date,1) ~* '[A-Z]') is true OR (right(license_exp_date,1) ~* '[0-9]') is true
-
--- The raw import has created 'NULL' strings instead of empty business names
--- Set Business name to licensee name if NULL
-UPDATE raw_data_temp 
-SET business_name = licensee_name
-WHERE business_name = 'NULL' OR busines_name IS NULL;
+WHERE (left(license_exp_date,1) ~* '[A-Z]') is true OR (right(license_exp_date,1) ~* '[0-9]') is true;
 
 -- Check if we have different lengths of zip code
 SELECT length(bus_zipcode), count(*) AS length_count
 FROM raw_data_temp 
 GROUP BY 1
 ORDER BY 1 ASC;
+
+-- The raw import has created 'NULL' strings instead of empty business names
+-- Set Business name to licensee name if NULL
+UPDATE raw_data_temp 
+SET business_name = licensee_name
+WHERE business_name = 'NULL' OR business_name IS NULL;
 
 -- We dont need more than the first 5 digits of zip code, so truncate it
 UPDATE raw_data_temp 
@@ -76,9 +80,9 @@ SET lic_exp_month = right(license_exp_date,1);
 
 -- Normalization is achieved through the CONSTRAINTS  
 
-DROP TABLE IF EXISTS atf_licenses_2018
+DROP TABLE IF EXISTS atf_licenses_2022;
 
-CREATE TABLE atf_licenses_2018 (
+CREATE TABLE atf_licenses_2022 (
 
     id bigint GENERATED ALWAYS AS IDENTITY,
     data_year numeric(4) NOT NULL,
@@ -96,24 +100,26 @@ CREATE TABLE atf_licenses_2018 (
     business_state_code char(2) NOT NULL, 
     business_zipcode text,
 
-    CONSTRAINT atf_license_key PRIMARY KEY (id),
-    CONSTRAINT region_fkey FOREIGN KEY(region_id) REFERENCES regions(region_id),
-    CONSTRAINT licensee_type_fkey FOREIGN KEY(licensee_type_code) REFERENCES licensee_types(licensee_type_id),
-    CONSTRAINT license_exp_month_code_fkey FOREIGN KEY(license_exp_month_code) REFERENCES license_exp_month(license_exp_mth_code),
-    CONSTRAINT business_state_code_fkey FOREIGN KEY(business_state_code) REFERENCES usa_states(state_code)
+    CONSTRAINT atf_license_key_2022 PRIMARY KEY (id),
+    CONSTRAINT region_fkey_2022 FOREIGN KEY(region_id) REFERENCES regions(region_id),
+    CONSTRAINT licensee_type_fkey_2022 FOREIGN KEY(licensee_type_code) REFERENCES licensee_types(licensee_type_id),
+    CONSTRAINT license_exp_month_code_fkey_2022 FOREIGN KEY(license_exp_month_code) REFERENCES license_exp_month(license_exp_mth_code),
+    CONSTRAINT business_state_code_fkey_2022 FOREIGN KEY(business_state_code) REFERENCES usa_states(state_code)
 
 );
 
-
-INSERT INTO atf_licenses_2018 (
+INSERT INTO atf_licenses_2022 (
     data_year,region_id,irs_dist_code,fips_county_code,licensee_type_code,license_exp_date_code,license_exp_month_code, 
     license_seq_num,licensee_name,business_name,business_street,business_city,business_state_code,business_zipcode
 )
-SELECT 2018, region,irs_dist,county_fips_code,license_type_code,license_exp_date,lic_exp_month,
+SELECT 2022, region,irs_dist,county_fips_code,license_type_code,license_exp_date,lic_exp_month,
        license_seq,licensee_name,business_name,bus_street,bus_city,bus_state,bus_zipcode
 FROM raw_data_temp;
 
-
 -- COMPARE COUNTS OF BOTH TABLES
 select count(*) from raw_data_temp;
-select count(*) from atf_licenses_2018;
+select count(*) from atf_licenses_2022;
+
+-- DROP TEMP TABLES
+DROP TABLE IF EXISTS raw_data_temp;
+DROP TABLE IF EXISTS raw_data_temp_backup;
