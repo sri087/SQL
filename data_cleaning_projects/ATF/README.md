@@ -39,7 +39,7 @@ SQL Code to clean, enrich and summarize ATF license data into tables which can b
 
 
   Sample Data
-  ![sample data](raw_data/Screenshot%20from%202022-06-03%2014-47-15.png)
+  ![sample data](screenshots/sampledata.png)
   
   
   Only the business address fields are used for normalization and the mail fields are ignored. 
@@ -75,17 +75,17 @@ SQL Code to clean, enrich and summarize ATF license data into tables which can b
   - Changes of number of fire arm licenses by year along with percentage of change between each year
 
     State
-    ![state](raw_data/summary-stats-1.png)
+    ![state](screenshots/summary-stats-1.png)
 
     Region
-    ![region](raw_data/summary-stats-2.png)
+    ![region](screenshots/summary-stats-2.png)
   - Top 10 states per year with highest number of firearm licenses
   
-    ![top10](raw_data/summary-stats-3.png)
+    ![top10](screenshots/summary-stats-3.png)
 
   - Distribution of license types
   
-    ![dist](raw_data/summary-stats-4.png)
+    ![dist](screenshots/summary-stats-4.png)
 
 ---
 ## References
