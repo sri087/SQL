@@ -18,19 +18,19 @@ RETURNS NULL on NULL INPUT;
 
 -- -- per region
 
-        CREATE TABLE st_region_2018 AS
+        CREATE VIEW st_region_2018 AS
         SELECT region_id,count(*) AS count_2018 FROM atf_licenses_2018 GROUP BY region_id ORDER BY 2 DESC;
    
-        CREATE TABLE st_region_2019 AS
+        CREATE VIEW st_region_2019 AS
         SELECT region_id,count(*) AS count_2019 FROM atf_licenses_2019 GROUP BY region_id ORDER BY 2 DESC;
 
-        CREATE TABLE st_region_2020 AS
+        CREATE VIEW st_region_2020 AS
         SELECT region_id,count(*) AS count_2020 FROM atf_licenses_2020 GROUP BY region_id ORDER BY 2 DESC;
 
-        CREATE TABLE st_region_2021 AS
+        CREATE VIEW st_region_2021 AS
         SELECT region_id,count(*) AS count_2021 FROM atf_licenses_2021 GROUP BY region_id ORDER BY 2 DESC;
 
-        CREATE TABLE st_region_2022 AS
+        CREATE VIEW st_region_2022 AS
         SELECT region_id,count(*) AS count_2022 FROM atf_licenses_2022 GROUP BY region_id ORDER BY 2 DESC;
 
         CREATE TABLE atf_licensee_summary_by_region AS
@@ -53,29 +53,29 @@ RETURNS NULL on NULL INPUT;
 
             ORDER BY reg.region_id ASC;
         
-        -- remove temporary tables
-        DROP TABLE st_region_2018;
-        DROP TABLE st_region_2019;
-        DROP TABLE st_region_2020;
-        DROP TABLE st_region_2021;
-        DROP TABLE st_region_2022;
+        -- remove views
+        DROP VIEW st_region_2018;
+        DROP VIEW st_region_2019;
+        DROP VIEW st_region_2020;
+        DROP VIEW st_region_2021;
+        DROP VIEW st_region_2022;
 
 
 -- -- per state
 
-        CREATE TABLE st_state_2018 AS
+        CREATE VIEW st_state_2018 AS
         SELECT business_state_code,count(*) AS count_2018 FROM atf_licenses_2018 GROUP BY business_state_code ORDER BY 2 DESC;
    
-        CREATE TABLE st_state_2019 AS
+        CREATE VIEW st_state_2019 AS
         SELECT business_state_code,count(*) AS count_2019 FROM atf_licenses_2019 GROUP BY business_state_code ORDER BY 2 DESC;
 
-        CREATE TABLE st_state_2020 AS
+        CREATE VIEW st_state_2020 AS
         SELECT business_state_code,count(*) AS count_2020 FROM atf_licenses_2020 GROUP BY business_state_code ORDER BY 2 DESC;
 
-        CREATE TABLE st_state_2021 AS
+        CREATE VIEW st_state_2021 AS
         SELECT business_state_code,count(*) AS count_2021 FROM atf_licenses_2021 GROUP BY business_state_code ORDER BY 2 DESC;
 
-        CREATE TABLE st_state_2022 AS
+        CREATE VIEW st_state_2022 AS
         SELECT business_state_code,count(*) AS count_2022 FROM atf_licenses_2022 GROUP BY business_state_code ORDER BY 2 DESC;
 
 
@@ -100,10 +100,8 @@ RETURNS NULL on NULL INPUT;
             ORDER BY a.business_state_code ASC;
         
         -- remove temporary tables
-        DROP TABLE st_state_2018;
-        DROP TABLE st_state_2019;
-        DROP TABLE st_state_2020;
-        DROP TABLE st_state_2021;
-        DROP TABLE st_state_2022;
-
-
+        DROP VIEW st_state_2018;
+        DROP VIEW st_state_2019;
+        DROP VIEW st_state_2020;
+        DROP VIEW st_state_2021;
+        DROP VIEW st_state_2022;
