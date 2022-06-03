@@ -3,14 +3,15 @@
 --
 -- id	data_year	region_id	irs_dist_code	fips_county_code	licensee_type_code	license_exp_date_code	license_exp_month_code	license_seq_num	licensee_name	business_name	business_street	business_city	business_state_code	business_zipcode
 
--- Determine the percent change in the number of licensees year to year
---
 
+-- PERCENT CHANGES 
+--
+-- Determine the percent change in the number of licensees year to year
 -- Helper function to compute percent change
 
 CREATE OR REPLACE FUNCTION pct_change(old_number numeric, new_number numeric, no_of_decimals integer DEFAULT 1) 
 RETURNS numeric AS
-   'SELECT round(((new_number - old_number) / old_number) * 100,no_of_decimals);'
+   'SELECT round(((new_number - old_number) / old_number) * 100, no_of_decimals);'
 LANGUAGE SQL
 IMMUTABLE
 RETURNS NULL on NULL INPUT;
@@ -78,7 +79,6 @@ RETURNS NULL on NULL INPUT;
         CREATE VIEW st_state_2022 AS
         SELECT business_state_code,count(*) AS count_2022 FROM atf_licenses_2022 GROUP BY business_state_code ORDER BY 2 DESC;
 
-
         CREATE TABLE atf_licensee_summary_by_state AS
             SELECT a.business_state_code,usa_states.state_name, a.count_2018, b.count_2019,c.count_2020,d.count_2021,e.count_2022,
                 pct_change(a.count_2018, b.count_2019,3) as pct_change_1819,
@@ -105,3 +105,31 @@ RETURNS NULL on NULL INPUT;
         DROP VIEW st_state_2020;
         DROP VIEW st_state_2021;
         DROP VIEW st_state_2022;
+
+-- TOP 10 STATS
+-- 
+
+-- TOP 10 states with most ATF licensees per year - from year 2018 to 2022
+WITH all_data AS (
+    SELECT * from atf_licenses_2018
+    UNION
+    SELECT * from atf_licenses_2019
+    UNION
+    SELECT * from atf_licenses_2020
+    UNION
+    SELECT * from atf_licenses_2021
+    UNION
+    SELECT * from atf_licenses_2022
+), 
+    sorted_data_no_of_licensees AS(
+    SELECT data_year, business_state_code, count(*) AS no_of_licensees
+    FROM all_data 
+    GROUP BY data_year,business_state_code
+    ORDER BY data_year ASC, no_of_licensees DESC
+)
+
+SELECT data_year, position, business_state_code, no_of_licensees FROM
+       ( SELECT data_year, business_state_code, no_of_licensees, 
+        rank() OVER ( PARTITION BY data_year ORDER BY no_of_licensees DESC ) AS position
+FROM sorted_data_no_of_licensees ) AS SQ
+WHERE position <= 10;
