@@ -19,92 +19,58 @@ RETURNS NULL on NULL INPUT;
 
 -- -- per region
 
-        CREATE VIEW st_region_2018 AS
-        SELECT region_id,count(*) AS count_2018 FROM atf_licenses_2018 GROUP BY region_id ORDER BY 2 DESC;
-   
-        CREATE VIEW st_region_2019 AS
-        SELECT region_id,count(*) AS count_2019 FROM atf_licenses_2019 GROUP BY region_id ORDER BY 2 DESC;
+    CREATE VIEW atf_licensee_summary_by_region AS
 
-        CREATE VIEW st_region_2020 AS
-        SELECT region_id,count(*) AS count_2020 FROM atf_licenses_2020 GROUP BY region_id ORDER BY 2 DESC;
-
-        CREATE VIEW st_region_2021 AS
-        SELECT region_id,count(*) AS count_2021 FROM atf_licenses_2021 GROUP BY region_id ORDER BY 2 DESC;
-
-        CREATE VIEW st_region_2022 AS
-        SELECT region_id,count(*) AS count_2022 FROM atf_licenses_2022 GROUP BY region_id ORDER BY 2 DESC;
-
-        CREATE TABLE atf_licensee_summary_by_region AS
-            SELECT reg.region_name, a.count_2018, b.count_2019,c.count_2020,d.count_2021,e.count_2022,
-                pct_change(a.count_2018, b.count_2019,3) as pct_change_1819,
-                pct_change(b.count_2019, c.count_2020,3) as pct_change_1920,
-                pct_change(c.count_2020, d.count_2021,3) as pct_change_2021,
-                pct_change(d.count_2021, e.count_2022,3) as pct_change_2022
-            FROM st_region_2018 a 
-                INNER JOIN st_region_2019 b 
-                ON a.region_id  = b.region_id
-                INNER JOIN st_region_2020 c
-                ON b.region_id  = c.region_id
-                INNER JOIN st_region_2021 d
-                ON c.region_id  = d.region_id
-                INNER JOIN st_region_2022 e
-                ON d.region_id  = e.region_id
-                INNER JOIN regions reg
-                ON e.region_id = reg.region_id
-
-            ORDER BY reg.region_id ASC;
-        
-        -- remove views
-        DROP VIEW st_region_2018;
-        DROP VIEW st_region_2019;
-        DROP VIEW st_region_2020;
-        DROP VIEW st_region_2021;
-        DROP VIEW st_region_2022;
+    WITH st_region_2018 AS (SELECT region_id,count(*) AS count_2018 FROM atf_licenses_2018 GROUP BY region_id ORDER BY 2 DESC),
+         st_region_2019 AS (SELECT region_id,count(*) AS count_2019 FROM atf_licenses_2019 GROUP BY region_id ORDER BY 2 DESC),
+         st_region_2020 AS (SELECT region_id,count(*) AS count_2020 FROM atf_licenses_2020 GROUP BY region_id ORDER BY 2 DESC),
+         st_region_2021 AS (SELECT region_id,count(*) AS count_2021 FROM atf_licenses_2021 GROUP BY region_id ORDER BY 2 DESC),
+         st_region_2022 AS (SELECT region_id,count(*) AS count_2022 FROM atf_licenses_2022 GROUP BY region_id ORDER BY 2 DESC)
+        SELECT reg.region_name, a.count_2018, b.count_2019,c.count_2020,d.count_2021,e.count_2022,
+            pct_change(a.count_2018, b.count_2019,3) as pct_change_1819,
+            pct_change(b.count_2019, c.count_2020,3) as pct_change_1920,
+            pct_change(c.count_2020, d.count_2021,3) as pct_change_2021,
+            pct_change(d.count_2021, e.count_2022,3) as pct_change_2022
+        FROM st_region_2018 a 
+            INNER JOIN st_region_2019 b 
+            ON a.region_id  = b.region_id
+            INNER JOIN st_region_2020 c
+            ON b.region_id  = c.region_id
+            INNER JOIN st_region_2021 d
+            ON c.region_id  = d.region_id
+            INNER JOIN st_region_2022 e
+            ON d.region_id  = e.region_id
+            INNER JOIN regions reg
+            ON e.region_id = reg.region_id
+        ORDER BY reg.region_id ASC;
 
 
 -- -- per state
 
-        CREATE VIEW st_state_2018 AS
-        SELECT business_state_code,count(*) AS count_2018 FROM atf_licenses_2018 GROUP BY business_state_code ORDER BY 2 DESC;
-   
-        CREATE VIEW st_state_2019 AS
-        SELECT business_state_code,count(*) AS count_2019 FROM atf_licenses_2019 GROUP BY business_state_code ORDER BY 2 DESC;
+    CREATE VIEW atf_licensee_summary_by_state AS
 
-        CREATE VIEW st_state_2020 AS
-        SELECT business_state_code,count(*) AS count_2020 FROM atf_licenses_2020 GROUP BY business_state_code ORDER BY 2 DESC;
-
-        CREATE VIEW st_state_2021 AS
-        SELECT business_state_code,count(*) AS count_2021 FROM atf_licenses_2021 GROUP BY business_state_code ORDER BY 2 DESC;
-
-        CREATE VIEW st_state_2022 AS
-        SELECT business_state_code,count(*) AS count_2022 FROM atf_licenses_2022 GROUP BY business_state_code ORDER BY 2 DESC;
-
-        CREATE TABLE atf_licensee_summary_by_state AS
-            SELECT a.business_state_code,usa_states.state_name, a.count_2018, b.count_2019,c.count_2020,d.count_2021,e.count_2022,
-                pct_change(a.count_2018, b.count_2019,3) as pct_change_1819,
-                pct_change(b.count_2019, c.count_2020,3) as pct_change_1920,
-                pct_change(c.count_2020, d.count_2021,3) as pct_change_2021,
-                pct_change(d.count_2021, e.count_2022,3) as pct_change_2022
-            FROM st_state_2018 a 
-                INNER JOIN st_state_2019 b 
-                ON a.business_state_code  = b.business_state_code
-                INNER JOIN st_state_2020 c
-                ON b.business_state_code  = c.business_state_code
-                INNER JOIN st_state_2021 d
-                ON c.business_state_code  = d.business_state_code
-                INNER JOIN st_state_2022 e
-                ON d.business_state_code  = e.business_state_code
-                INNER JOIN usa_states
-                ON e.business_state_code = usa_states.state_code
-
-            ORDER BY a.business_state_code ASC;
-        
-        -- remove temporary tables
-        DROP VIEW st_state_2018;
-        DROP VIEW st_state_2019;
-        DROP VIEW st_state_2020;
-        DROP VIEW st_state_2021;
-        DROP VIEW st_state_2022;
+    WITH st_state_2018 AS (SELECT business_state_code,count(*) AS count_2018 FROM atf_licenses_2018 GROUP BY business_state_code ORDER BY 2 DESC),
+         st_state_2019 AS (SELECT business_state_code,count(*) AS count_2019 FROM atf_licenses_2019 GROUP BY business_state_code ORDER BY 2 DESC),
+         st_state_2020 AS (SELECT business_state_code,count(*) AS count_2020 FROM atf_licenses_2020 GROUP BY business_state_code ORDER BY 2 DESC),
+         st_state_2021 AS (SELECT business_state_code,count(*) AS count_2021 FROM atf_licenses_2021 GROUP BY business_state_code ORDER BY 2 DESC),
+         st_state_2022 AS (SELECT business_state_code,count(*) AS count_2022 FROM atf_licenses_2022 GROUP BY business_state_code ORDER BY 2 DESC)
+        SELECT a.business_state_code,usa_states.state_name, a.count_2018, b.count_2019,c.count_2020,d.count_2021,e.count_2022,
+            pct_change(a.count_2018, b.count_2019,3) as pct_change_1819,
+            pct_change(b.count_2019, c.count_2020,3) as pct_change_1920,
+            pct_change(c.count_2020, d.count_2021,3) as pct_change_2021,
+            pct_change(d.count_2021, e.count_2022,3) as pct_change_2022
+        FROM st_state_2018 a 
+            INNER JOIN st_state_2019 b 
+            ON a.business_state_code  = b.business_state_code
+            INNER JOIN st_state_2020 c
+            ON b.business_state_code  = c.business_state_code
+            INNER JOIN st_state_2021 d
+            ON c.business_state_code  = d.business_state_code
+            INNER JOIN st_state_2022 e
+            ON d.business_state_code  = e.business_state_code
+            INNER JOIN usa_states
+            ON e.business_state_code = usa_states.state_code
+        ORDER BY a.business_state_code ASC;
 
 -- TOP 10 STATS
 -- 
