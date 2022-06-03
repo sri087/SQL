@@ -75,7 +75,7 @@ SQL Code to clean, enrich and summarize ATF license data into tables which can b
   - Changes of number of fire arm licenses by year along with percentage of change between each year
 
     State
-    ![state](raw_data/summary-stats-1.png)
+    ![state](https://drive.google.com/file/d/16P1tENwlKc3kYBXBL6lPRmIVEgjOJpQO/view?usp=sharing)
 
     Region
     ![region](raw_data/summary-stats-2.png)
