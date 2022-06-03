@@ -133,3 +133,23 @@ SELECT data_year, position, business_state_code, no_of_licensees FROM
         rank() OVER ( PARTITION BY data_year ORDER BY no_of_licensees DESC ) AS position
 FROM sorted_data_no_of_licensees ) AS SQ
 WHERE position <= 10;
+
+
+-- DISTRIBUTION OF LICENSE TYPES
+--
+WITH all_data AS (
+    SELECT * from atf_licenses_2018
+    UNION
+    SELECT * from atf_licenses_2019
+    UNION
+    SELECT * from atf_licenses_2020
+    UNION
+    SELECT * from atf_licenses_2021
+    UNION
+    SELECT * from atf_licenses_2022
+)
+SELECT licensee_type.licensee_type_desc, count(a.*) AS total,  repeat('*', cast(round(count(a.*)/1000,0)as smallint)) AS graph 
+FROM all_data a JOIN licensee_types licensee_type 
+ON a.licensee_type_code = licensee_type.licensee_type_id
+GROUP BY licensee_type.licensee_type_desc
+ORDER BY 2 ASC;

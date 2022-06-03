@@ -9,7 +9,7 @@ SQL Code to clean, enrich and summarize ATF license data into tables which can b
 ## Goals
 1. Normalize the raw data into SQL tables
 2. Enrich the data by JOIN-ing it with related tables
-3. Generate summary statistics , percent changes in the number of licenses year on year per state and per region
+3. Generate summary statistics
 
 ---
 
@@ -36,8 +36,10 @@ SQL Code to clean, enrich and summarize ATF license data into tables which can b
     - MAIL_STATE: Mailing location of the business
     - MAIL_ZIP_CODE: Mailing location of the business
     - VOICE_PHONE: Phone number
-  
+
+
   Sample Data
+  ![sample data](raw_data/Screenshot%20from%202022-06-03%2014-47-15.png)
   
   
   Only the business address fields are used for normalization and the mail fields are ignored. 
@@ -69,10 +71,28 @@ SQL Code to clean, enrich and summarize ATF license data into tables which can b
   - usa_states: state code with state names
 
 ---
+- Summary Stats
+  - Changes of number of fire arm licenses by year along with percentage of change between each year
 
+    State
+    ![state](raw_data/summary-stats-1.png)
 
+    Region
+    ![region](raw_data/summary-stats-2.png)
+  - Top 10 states per year with highest number of firearm licenses
+  
+    ![top10](raw_data/summary-stats-3.png)
 
+  - Distribution of license types
+  
+    ![dist](raw_data/summary-stats-4.png)
+
+---
 ## References
+
+- ATF site : https://www.atf.gov
+- Explanation of license fields : https://rocketffl.com/ffl-number/
+
 
 
 ## LICENSE
